@@ -1,6 +1,4 @@
 from svgpathtools import svg2paths
-from math import cos , fabs , pi
-from svg.path import Path, Line, Arc, CubicBezier, QuadraticBezier, Close
 from svg.path import parse_path
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,12 +20,12 @@ plt.plot(*zip(*pts))
 plt.savefig('svgdraw')#saving the figure
 plt.show()
 
-k=150# order
+k=300# order
 c=[]#holding the constants
 '''genorating the constants'''
 for order in range(-k,k):
     cn=0
-    print(order,'constant')
+
     for i in range(n+1):
         cn=cn+(p[i]*np.exp(-2*np.pi*order*1j*(i/n))*(1/n))
         
@@ -49,4 +47,32 @@ fl=[(l.real,l.imag) for l in (f)]#getting real and imaganry parts for plotting o
 '''plotting and saving'''
 plt.plot(*zip(*fl))
 plt.savefig('fourdraw')
+plt.show()
+
+'''animating the Fourier reconstruction'''
+fig, ax = plt.subplots()
+ax.plot(*zip(*pts), color='lightgray', label='Original SVG')
+animated_line, = ax.plot([], [], color='black', label='Fourier reconstruction')
+ax.set_aspect('equal')
+all_points = pts + fl
+ax.set_xlim(min(point[0] for point in all_points), max(point[0] for point in all_points))
+ax.set_ylim(min(point[1] for point in all_points), max(point[1] for point in all_points))
+ax.legend()
+
+frame_indices = np.unique(np.linspace(2, len(fl), 300, dtype=int))
+
+def update(frame):
+    animated_line.set_data(*zip(*fl[:frame]))
+    return animated_line,
+
+animation = FuncAnimation(
+    fig,
+    update,
+    frames=frame_indices,
+    interval=20,
+    blit=True,
+    repeat=True,
+)
+save_path = 'fourier_animation.mp4'
+animation.save(save_path, writer='ffmpeg', fps=30)
 plt.show()

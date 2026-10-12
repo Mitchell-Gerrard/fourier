@@ -16,7 +16,7 @@ Place an SVG file named `Fourier.svg` in the project folder. The script currentl
 python forsvg.py
 ```
 
-The script displays two plots and saves them as `svgdraw.png` and `fourdraw.png`.
+The script displays the original SVG and Fourier reconstruction, saves them as `svgdraw.png` and `fourdraw.png`, and then opens an animation that progressively traces the Fourier reconstruction.
 
 ## Tuning
 
